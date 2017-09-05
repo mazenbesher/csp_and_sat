@@ -29,7 +29,7 @@ $$
 \end{figure}
 
 \subsubsection{Encoding inequality constraints}
-Order encoding works best for the inequality constraints (concretely constraints of the form $\sum_i a_i x_i \leq b$). Other types of constraints will be discussed in the next section \ref{sec:general_constraints}. The efficiency of the order encoding lays in its powerful encoding of entire conflict regions instead of single conflict points (in comparison with log and direct encodings). To encode a constraint of the form $\sum_{i=1}^n a_i x_i \leq b$, we must first generate the conflict regions for each variable which is a set of integer tuples $C := \{c_1, \dots, c_n \}$ that satisfies the constraints: 
+Order encoding works best for the inequality constraints (concretely constraints of the form $\sum_i a_i x_i \leq b$). Other types of constraints will be discussed in the next section \ref{sec:general_constraints}. The efficiency of the order encoding lays in its powerful encoding of entire conflict regions instead of single conflict points (in comparison with log and direct encodings) \cite{tamura2008sugar}. To encode a constraint of the form $\sum_{i=1}^n a_i x_i \leq b$, we must first generate the conflict regions for each variable which is a set of integer tuples $C := \{c_1, \dots, c_n \}$ that satisfies the constraints: 
 \begin{align}
 	&\sum_{i=1}^n c_i = b - n + 1 \\
 	&\bigwedge_{i=1}^n (\min(a_i \cdot x_i) \leq c_i \leq \max(a_i \cdot x_i))
@@ -85,10 +85,10 @@ $$
 \subsubsection{Encoding general constraints}\label{sec:general_constraints}
 Other types of constraints are replaced by equivalent expressions composed from one or multiple constraints of the form $\sum_i a_i x_i \leq b$ while adding extra conditions (clauses) if necessary.
 
-For example to encode the expression $x < y$ we replace it by $x + 1 \leq y \equiv p_{(x+1)y}$, an equality expression between $x$ and $y$ can be then replaced by $x \leq y \wedge x \geq y \equiv x \leq y \wedge \neg (x < y) \equiv p_{xy} \wedge p_{(x+1)y}$, similarly $x \neq y \equiv x < y \vee x > y$ and so on.
+For example to encode the expression $x < y$ we replace it by $x + 1 \leq y \equiv p_{(x+1)y}$, an equality expression between $x$ and $y$ can be then replaced by $x \leq y \wedge x \geq y \equiv x \leq y \wedge \neg (x < y) \equiv p_{xy} \wedge p_{(x+1)y}$, similarly $x \neq y \equiv x < y \vee x > y$ and so on \cite{tamura2008sugar}.
 
 \subsubsection{Importance}
-In theory and assuming wort-time performance, the order encoding is no better than the other type of encodings, but in real-world applications it has been shown that the order encoding have better performance than the direct encoding on instances of the graph coloring and open-shop scheduling problems. \cite{tamura2009compiling}
+In theory and assuming worst-time performance, the order encoding is no better than the other type of encodings, but in real-world applications it has been shown that the order encoding have better performance than the direct encoding on instances of the graph coloring and open-shop scheduling problems. \cite{tamura2009compiling}
 
 Moreover, the order encoding, unlike the other encodings discussed earlier, is the first encoding that can translate a CSP into a so called tractable SAT, which means that the SAT problem can be solved by a SAT-solver in polynomial time. However, this statement is true only for certain classes of CSP problems. It has been proven that the following tractable CSP classes can be encoded into a tractable SAT problems using the order encoding: \cite{petke2011order}
 \begin{enumerate}
