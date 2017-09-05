@@ -1,0 +1,101 @@
+% !TeX spellcheck = en_US
+\subsection{Order encoding}
+
+Order encoding took a different path to approach the problem of transforming CSP into SAT. The essential idea is extending the expressive power of Boolean expressions to represent a whole range of possible values on the CSP side as a comparison.
+
+Despite being simple in its complexity, the order encoding is one if most efficient approaches to encode CSP into SAT and generate a relatively simpler instance that can be solved quickly under the assumption that the right conditions are met.
+
+\subsubsection{Usage}
+A lot of the CSP-Solvers are actually based on a SAT-Solver (such as MiniSat). The given CSP is first encoded using order encoding (or a variant of it) and then solved by the SAT-Solver. One of the first prominent award-winning SAT-based constraint solvers called sugar, which is based around the same idea using MiniSat as the underlying SAT-solver \cite{tamura2008sugar}.
+
+\subsubsection{Encoding the variables}
+Assuming a consistent CSP domain for the variable $x$ ranging from $l(x)$ to $u(x)$ where $l$ and $u$ represent the lower and upper bounds respectively, a Boolean variable is generated $p_{xi}$ for each value $i$ in the domain of $x$. $p_{xi}$ is semantically equal to $x \leq i$. And therefor $p_{xk}$ for $k = u(x)$ is always True and must be added as its own clause because it must be satisfied.
+
+To facilitate an unambiguous entry point for DPLL, the order encoding adds additional trivial propositional variable  $p_{xj}$ for each CSP  variable $x$ where $j = l(x) - 1$. This variable must be added as its own clause since it's clearly False at all times. Similar variables $p_{xk}$ for  $k = u(x)$ are always True. Both of these clauses $\neg p_{xj} \wedge p_{xk}$ helps the unit propagation rule exploiting the SAT instance of the problem and constraint it by providing boundaries for each variable.
+
+Since $x \leq i$ implies $x \leq i+1$ and $p_{xi}$ means $x \leq i$, we must also encode this fact into our SAT to ensure a consistent assignment of each variable:
+$$
+x \leq i \rightarrow x \leq i + 1 \quad \equiv \quad
+\neg x \leq i \vee x \leq i + 1 \quad \equiv \quad
+\neg p_{xi} \vee p_{x(i+1)}
+$$
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{assets/order_encoding_variables}
+	\captionsetup{justification=centering,margin=2cm}
+	\caption{An example for encoding CSP variables using order encoding}
+	\label{fig:order_encoding_variables}
+\end{figure}
+
+\subsubsection{Encoding inequality constraints}
+Order encoding works best for the inequality constraints (concretely constraints of the form $\sum_i a_i x_i \leq b$). Other types of constraints will be discussed in the next section \ref{sec:general_constraints}. The efficiency of the order encoding lays in its powerful encoding of entire conflict regions instead of single conflict points (in comparison with log and direct encodings). To encode a constraint of the form $\sum_{i=1}^n a_i x_i \leq b$, we must first generate the conflict regions for each variable which is a set of integer tuples $C := \{c_1, \dots, c_n \}$ that satisfies the constraints: 
+\begin{align}
+	&\sum_{i=1}^n c_i = b - n + 1 \\
+	&\bigwedge_{i=1}^n (\min(a_i \cdot x_i) \leq c_i \leq \max(a_i \cdot x_i))
+\end{align}
+
+Then the required clauses to encode the constraint are:
+\begin{equation}
+\forall c_i \in C: \bigvee_{i=1}^n 
+\begin{dcases}
+	x_i \leq \lfloor \frac{c_i}{a_i} \rfloor \equiv
+	 p_{x_i (\lfloor \frac{c_i}{a_i} \rfloor)} &\quad a_i > 0 \\[10pt]
+	\neg (x_i \leq \lceil \frac{c_i}{a_i} - 1) \rceil \equiv
+	 \neg p_{x_i (\lceil \frac{c_i}{a_i} - 1) \rceil)} &\quad a_i < 0 
+\end{dcases}
+\end{equation}
+
+\paragraph{Example}
+To encode the constraint $x + y \leq 5$ for the unified domain $\{2,3,4\}$ we need to consider the conflict regions $C = \{ (1,3), (2,2), (3,1) \}$, so the following clauses must be included in our SAT formula:
+$$
+	p_{x1} \vee p_{y3}  \quad(\bullet) \qquad
+	p_{x2} \vee p_{y2}  \quad(\times)  \qquad
+	p_{x3} \vee p_{y1}  \quad(\circ)
+$$
+
+\begin{figure}[H]
+	\centering
+	\definecolor{cqcqcq}{rgb}{0.7529411764705882,0.7529411764705882,0.7529411764705882}
+	\begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1.0cm,y=1.0cm]
+	\draw [color=cqcqcq,, xstep=1.0cm,ystep=1.0cm] (0,0) grid (5.5,5.5);
+	\draw[->,color=black] (-0.78,0.) -- (5.75,0.);
+	\foreach \x in {,1.,2.,3.,4.,5.}
+	\draw[shift={(\x,0)},color=black] (0pt,2pt) -- (0pt,-2pt) node[below] {\footnotesize $\x$};
+	\draw[->,color=black] (0.,-0.57) -- (0.,5.92);
+	\foreach \y in {,1.,2.,3.,4.,5.}
+	\draw[shift={(0,\y)},color=black] (2pt,0pt) -- (-2pt,0pt) node[left] {\footnotesize $\y$};
+	\draw[color=black] (0pt,-10pt) node[right] {\footnotesize $0$};
+	\clip(-0.78,-0.57) rectangle (5.75,5.91);
+	\draw [domain=-0.78:5.75] plot(\x,{(--5.-1.*\x)/1.});
+	\begin{scriptsize}
+	\draw [fill=black] (1.,3.) circle (2.5pt);
+	\draw [fill=black] (1.,2.) circle (2.5pt);
+	\draw [fill=black] (1.,1.) circle (2.5pt);
+	\draw [color=black] (2.,2.)-- ++(-2.5pt,-2.5pt) -- ++(5.0pt,5.0pt) ++(-5.0pt,0) -- ++(5.0pt,-5.0pt);
+	\draw [color=black] (2.,1.)-- ++(-2.5pt,-2.5pt) -- ++(5.0pt,5.0pt) ++(-5.0pt,0) -- ++(5.0pt,-5.0pt);
+	\draw [color=black] (3.,1.) circle (2.5pt);
+	\end{scriptsize}
+	\end{tikzpicture}
+	\captionsetup{justification=centering,margin=2cm}
+	\caption{An example for encoding the constraint $x + y \leq 5$ using order encoding}
+	\label{fig:order_encoding_example}
+\end{figure}
+
+\subsubsection{Encoding general constraints}\label{sec:general_constraints}
+Other types of constraints are replaced by equivalent expressions composed from one or multiple constraints of the form $\sum_i a_i x_i \leq b$ while adding extra conditions (clauses) if necessary.
+
+For example to encode the expression $x < y$ we replace it by $x + 1 \leq y \equiv p_{(x+1)y}$, an equality expression between $x$ and $y$ can be then replaced by $x \leq y \wedge x \geq y \equiv x \leq y \wedge \neg (x < y) \equiv p_{xy} \wedge p_{(x+1)y}$, similarly $x \neq y \equiv x < y \vee x > y$ and so on.
+
+\subsubsection{Importance}
+In theory and assuming wort-time performance, the order encoding is no better than the other type of encodings, but in real-world applications it has been shown that the order encoding have better performance than the direct encoding on instances of the graph coloring and open-shop scheduling problems. \cite{tamura2009compiling}
+
+Moreover, the order encoding, unlike the other encodings discussed earlier, is the first encoding that can translate a CSP into a so called tractable SAT, which means that the SAT problem can be solved by a SAT-solver in polynomial time. However, this statement is true only for certain classes of CSP problems. It has been proven that the following tractable CSP classes can be encoded into a tractable SAT problems using the order encoding: \cite{petke2011order}
+\begin{enumerate}
+	\item constraint-closed
+	\item max-closed
+	\item connected row-convex
+\end{enumerate}
+All the previous classes are some type of formality imposed on the constraints' set of the CSP problem. Comparisons and tables of SAT-solvers performance on the direct, log and order encoding of different tractable CSP instances can be found in \cite{petke2011order}.
+
+

@@ -1,0 +1,35 @@
+% !TeX spellcheck = en_US
+\section{Preliminaries}\label{sec:prelim}
+In this section, the algorithms used for solving each problem and the basis criteria for the theoretical comparison between them will be formally introduced. 
+
+\subsection{The Davis-Putnam-Logemann-Loveland algorithm (DPLL)}
+One technique to solve the satisfiability problem is the Davis-Putnam-Logemann-Loveland (DPLL) algorithm, which is a refinement of the original resolution-based Davis-Putnam (DP) algorithm. DPLL is based on four rules:
+\begin{enumerate}
+	\item Tautology elimination
+	\item One Literal (Unit clause)
+	\item Pure Literal
+	\item Branching or splitting
+\end{enumerate}
+For our purposes, just the one literal and the branching rules will be considered as they are sufficient for the completeness and soundness of the algorithm, and none of the other rules affect the efficiency.
+
+%%% Important rules (2+4) quick explanation
+\textit{One Literal:} This rule eliminates unit clauses (any clause contains a single unassigned literal) by assigning the only possible value to make this literal true. Thus, no choice is necessary. By applying this rule, a large part of the entire search space can be pruned, leading to a more efficient SAT instance that is equivalent to the original problem.
+
+\textit{Branching:} When no other rule is applicable, branching is used to assign a truth value to a variable. This assignment is non-deterministic and depending on the used branching-heuristics a variable is chosen. 
+
+An unsatisfiable SAT problem will lead to apply branching and unit propagation to all branches until no variable is left. For this reason, it is usually harder to detect unsatisfiability, since all branches must be traversed.
+
+\subsection{Arc consistency and the forward checking algorithm (FC)}
+A standard approach to solve the constraint satisfaction problems is maintaining arc consistency (MAC) or forward checking (FC). Both algorithms are built around the idea of enforcing some level of arc consistency (AC) at each step and branch when needed. The main difference between FC and MAC is the fact that MAC tries to maintain AC on each node at every level while FC tries to avoid the extra work by maintain AC only between the most recently instantiated variables and those that are still not instantiated.
+
+While FC do in general much less work at each node, it needs to branch much more to exclude all wrong paths. On the other hand, MAC usually have smaller number of branches and spends in return more time at each node. This trade-off leads to different characteristics of each algorithm, which in turn prioritize one over another according to the concrete problem.
+% TODO where to cont. ....one can better than the other
+
+\subsection{Analysis approach}
+To determinate that an encoding is good enough or rather better than another (see below), we will compare solving a given problem with its standard algorithm to solving the encoded version of the same problem with its respective standard algorithm. For example: A CSP problem can be solved directly using MAC or it can be encoded as SAT problem (using order encoding for instance) and solved using DPLL. Note that the encoding process cannot take longer time than solving the problem itself. In concrete terms, the encoding procedure (which can be considered as reduction) can be done in polynomial time since both problems are NP complete.
+
+\subsubsection{Branching for comparing}
+Since both MAC/FC and DPLL are backtracking based approaches, we will use the number of visited branches as indicator for the efficiency of each algorithm and in this way compare the impact of achieving arc-consistency from FC on the CSP with unit propagation from DPLL on the SAT problem. So, one algorithm outperforms (dominates) another if and only if it visits less number of branches assuming equivalent branching heuristics.
+
+This criterion has been chosen because it serves as a good indicator for the performance of these algorithms in real world applications. This comparison will be aided with examples and comparisons at the end of the paper.
+Notice that considering this criterion, FC is always dominated by MAC which does not always reflect the real performance but gives a good clue about the efficiency of each algorithm without diving too deep into the exact implementation.

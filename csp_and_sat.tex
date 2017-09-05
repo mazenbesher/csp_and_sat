@@ -1,0 +1,71 @@
+% !TeX spellcheck = en_US
+\documentclass[compsoc,onecolumn,11pt,a4paper,final]{IEEEtran}
+
+%%% Packages
+\usepackage[utf8]{inputenc} 			% for umlautes
+%\usepackage[ngerman]{babel} 			% for German
+\usepackage[T1]{fontenc} 				% adjust font encoding in output
+\usepackage{amsmath} 					% enable mathematical symbols
+\usepackage[cmintegrals]{newtxmath}		% ieee style for integrals
+\usepackage{xargs}                      % use more than one optional parameter in a new commands
+\usepackage[pdftex,dvipsnames]{xcolor}  % coloured text etc.
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{float}						% forcing figure here (H option)
+\usepackage{ifdraft}					% \ifdraft{do in draft}{do in final}
+\usepackage{hyperref}					% PDF-Links and Bookmarks
+\usepackage{bookmark}
+\usepackage{mathtools}
+\usepackage{soul}						% \st for strike through
+\usepackage{lipsum}						% dummy text
+
+%%% Tikz
+\usepackage{pgf,tikz}
+\usepackage{mathrsfs}
+\usetikzlibrary{arrows}
+
+%%% Colors
+\definecolor{red}{rgb}{1,0,0}
+\definecolor{green}{rgb}{0,1,0}
+\definecolor{blue}{rgb}{0,0,1}
+
+%%% TODO nots
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+\newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
+\newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
+\newcommandx{\improvement}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
+\newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}}
+
+%%% Title and author
+\title{CSP and SAT Encoding}
+\author{ 
+	\IEEEauthorblockN{Mazen Bouchur}\\
+	\IEEEauthorblockA{TU Clausthal, Germany}
+}
+
+\begin{document}
+\maketitle
+	
+\begin{abstract}\label{abstract}
+This paper gives a brief overview over different encodings between the constraint satisfaction problem (CSP) and the Boolean satisfiability problem (SAT). 
+Each encoding is analyzed and evaluated based on various aspects and characteristics such as performance and complexity. 
+Most importantly each encoding is being compared performance-wise to the unencoded counterpart with respect to the standard algorithm of each problem (DPLL in case of SAT and arc consistency based algorithm in case of CSP).
+We try to summarize multiple papers discussing several encodings and highlight the remarkable properties of each them, specially the SAT solver "sugar" and its underlying order encoding.
+\end{abstract}
+
+\input{introduction}
+\input{preliminaries}
+\input{csp_to_sat}
+\input{sat_to_csp}
+
+\section{Conclusion}\label{sec:conclusion}
+We discussed some mappings between the constraint satisfaction problem (CSP) and the Boolean satisfiability problem (SAT). Some theoretical background has been introduced and based on general comparing criterion the encodings have been analyzed and compared against each other. It has been shown that the choice of an encoding has a large impact on the efficiency and solvability of the generated problem. Encoding CSP into simpler SAT problem has led to efficient instances of the original problem that can be solved quickly. This claim was supported with theoretical arguments and proofs specially in the case of some tractable CSP classes encoded using the order encoding. Based on similar encoding techniques various new SAT-based constraint solves have been developed. On the other hand, a variety of SAT to CSP encodings have been introduced. Although no SAT to CSP encoding has proven itself to be superior, a clearer picture of the relation between CSP and SAT has emerged and further studies can build upon these results.
+
+%%% Bibliography
+\newpage
+\nocite{*}
+\bibliographystyle{ieeetran}
+\bibliography{bibliography}
+
+\end{document}

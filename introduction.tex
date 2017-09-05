@@ -1,0 +1,26 @@
+% !TeX spellcheck = en_US
+\section{Introduction}\label{sec:intro}
+\subsection{SAT}
+%%% Importance
+Ever since it was formulated and the Boolean satisfaction problem (SAT) is gaining an increasing interest in the field of computer science. It has a wide range of applications in various areas, ranging from hardware design to artificial intelligence (AI) and verification. SAT can be used to express many AI tasks and mathematical problems as a constraint satisfaction problems. Other theoretical applications also include automated theorem proving and model checking.
+
+SAT can be defined as the problem of finding an assignment of the propositional variables of given Boolean formula, such that the whole formula evaluates to True (satisfied).
+%%%% Other
+SAT is one of the first problems that was proven to be NP-complete, which makes it gain increased importance.
+Being simple in its nature and construction has allowed intensive studying and optimization. Therefore, the efforts to converting problems into SAT instances to benefit from its advantages should come as no surprise.
+Throughout this paper it is assumed that the SAT problem is expressed in clausal CNF form to facilitate a common basis. % TODO
+
+\subsection{CSP}
+%(On the other hand)
+Many famous problems such as the n-queens’ problem, map coloring and Sudoku can be easily expressed as an instance of the constraint satisfaction problem (CSP). Each CSP consists of three sets: 
+\begin{enumerate}
+	\item Set of variables.
+	\item Set of domains for each variable (usually a finite domain is chosen for all the variables).
+	\item Set of relations that define the constraints over a subset of the variables’ set.
+\end{enumerate}
+
+\subsubsection{CSP Types}
+Based on the number of the participated variables, a constraint can be classified as unary, binary or n-ary constraint. The entire CSP can be described as binary or non-binary depending on the constraints’ classification. To be consistent and for facilitate theoretical analysis only unary and binary CSP are considered in this paper.Any n-ary can be expanded and expressed in terms of binary constraints.
+
+%Studying the relationships and connections between those problems:
+% TODO 	Exploit the fact that SAT is better studied and simpler in CSP solving\\
