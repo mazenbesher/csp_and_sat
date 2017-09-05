@@ -41,7 +41,7 @@ The direct encoding can be categorized under a general type called the sparse en
 \subsubsection{Proposition}
 Solving the CSP problem directly with FC compared to the direct encoded SAT instance of the same CSP problem solved with DPLL will always result in similar search tree structure. i.e. FC on the original CSP problem and DPLL on the direct encoded SAT will explore the same number of branches. This proposition assumes equivalent branching heuristics for DPLL and FC.
 
-\subsubsection{Proof idea}
+\subsubsection{Proof idea}\label{subsec:direct_encoding_proof}
 Considering the generated search tree, our version of DPLL comprise only two rules: the one literal and the branching rule. This means at each node in the tree we either have to branch or the given variable must be assigned a truth value of either False or True. 
 
 On the FC side branching is equivalent to its counterpart in DPLL. The second case in DPLL (unit propagation by the one literal rule) is also equivalent to applying forward checking by enforcing arc consistency and reducing the domain of each CSP variable to one value only.
