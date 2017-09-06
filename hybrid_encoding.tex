@@ -7,3 +7,32 @@ Other encodings have already proposed merging multiple encodings together to ben
 
 \subsubsection{Performance test}
 The authors implemented their own CSP-Solver and tested it against two sets of benchmark problems. The first set was handmade and the second one was selected from a CSP solver competition. In both tests the hybrid encoding showed better results and superior performance compared to applying the partial encodings alone. Detailed tables with exact figures and details about the test environment are provided in the original paper \cite{soh2015hybrid}. It should be noted that this some problems with high artiy and domain size could be only solved with the hybrid encoding in a reasonable amount of time.
+
+The following Venn diagram in Fig.\ref{fig:hybrid_encoding_venn} shows the number of instances from the second benchmarks set solved by each encoding. Clearly the hybrid encoding with 815 solved instance dominates both log and direct encoding. Only 6 problems were unsolvable by the new hybrid encoding, which is the smallest among the other encodings. The paper \cite{soh2015hybrid} also compares the 3 encodings regarding the average CPU time needed for solving the first benchmark set. As expected, the hybrid encoding correctly inherits the advantages of both encodings and comes out as the clear winner.
+
+\begin{figure}[H]
+	\centering
+
+	\begin{tikzpicture}[thick]
+		 % Draw the circles
+		 \draw (0,0) circle (1.5cm);
+		 \draw (-60:2cm) circle (1.5cm);
+		 \draw (0:2cm) circle (1.5cm);
+		 
+		 % Label the circles
+		 \draw (-3,-0) node {Hybrid};
+		 \draw (1,-4) node {Log};
+		 \draw (5,0) node {Order};
+		 \draw (-0.5,0.3) node {4};
+		 \draw (1,0.3) node {40};
+		 \draw (2.5,0.3) node {5};
+		 \draw (0.2,-0.9) node {46};
+		 \draw (1,-0.6) node {725};
+		 \draw (1.8,-0.9) node {0};
+		 \draw (1,-2) node {1};
+	\end{tikzpicture}
+	
+	\captionsetup{justification=centering,margin=2cm}
+	\caption{Number of solved instances by each encoding}
+	\label{fig:hybrid_encoding_venn}
+\end{figure}
