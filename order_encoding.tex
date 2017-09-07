@@ -90,18 +90,13 @@ For example to encode the expression $x < y$ we replace it by $x + 1 \leq y \equ
 The following table shows how the CSP-solver sugar tries to replace general expressions with constraints of the form $\sum_i a_i x_i \leq b$ while adding extra conditions if needed \cite{tamura2008sugar}.
 
 \begin{center}
-\begin{tabular}{|c|c|c|}
-	\hline 
-	\textbf{Original Constraint} & \textbf{Replacement} & \textbf{Extra condition} \\ 
+\begin{tabular}{c|c|c}
+	Original Constraint & Replacement & Extra condition \\ 
 	\hline 
 	$\max(a,b)$ & $x$ & $(x \geq a) \wedge (x \geq b) \wedge ((x \leq a) \vee (x \leq b))$ \\ 
-	\hline 
 	$\min(a,b)$ & $x$ & $(x \leq a) \wedge (x \leq b) \wedge ((x \geq a) \vee (x \geq b))$ \\ 
-	\hline 
 	$\left| a \right|$ & $\max(a,-a)$ &  \\ 
-	\hline 
-	$a\mod b$ & $r$ & $(a = c q + r) \wedge (0 \leq r) \wedge (r < c)$ \\ 
-	\hline 
+	$a \bmod b$ & $r$ & $(a = c q + r) \wedge (0 \leq r) \wedge (r < c)$ \\ 
 \end{tabular} 
 \end{center}
 
